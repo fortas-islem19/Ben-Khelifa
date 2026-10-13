@@ -1,4 +1,6 @@
+import { motion } from 'motion/react'
 import { integrations } from '../../config/site'
+import Confetti from '../motion/Confetti'
 import { formatDate } from '../../utils/format'
 import { track } from '../../services/pixel'
 
@@ -16,10 +18,35 @@ export default function OrderSuccess({ result, onNewOrder }) {
   )
 
   return (
-    <div className="success" role="status">
-      <span className="success__icon" aria-hidden="true">
-        ✓
-      </span>
+    <motion.div
+      className="success"
+      role="status"
+      initial={{ opacity: 0, y: 30, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 120, damping: 16 }}
+    >
+      <Confetti />
+      <motion.span
+        className="success__icon"
+        aria-hidden="true"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 12, delay: 0.1 }}
+      >
+        <svg viewBox="0 0 24 24" width="30" height="30">
+          <motion.path
+            d="M5 12.5l4.5 4.5L19 7.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+          />
+        </svg>
+      </motion.span>
       <h3>Merci {record.customerName.split(' ')[0]} !</h3>
       <p>
         Votre demande <strong>{reference}</strong> a bien été reçue. Notre équipe vous appelle très vite au{' '}
@@ -47,6 +74,6 @@ export default function OrderSuccess({ result, onNewOrder }) {
           Nouvelle commande
         </button>
       </div>
-    </div>
+    </motion.div>
   )
 }

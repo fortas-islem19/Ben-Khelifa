@@ -7,22 +7,27 @@ import Highlights from './components/Highlights'
 import HowItWorks from './components/HowItWorks'
 import OrderSection from './components/order/OrderSection'
 import WhatsAppButton from './components/WhatsAppButton'
+import { MotionConfig } from 'motion/react'
+import StudioTeaser from './components/StudioTeaser'
 import { OrderProvider } from './hooks/OrderContext'
 
 export default function App() {
   return (
-    <OrderProvider>
-      <Header />
-      <main>
-        <Hero />
-        <Highlights />
-        <Collection />
-        <HowItWorks />
-        <OrderSection />
-        <Faq />
-      </main>
-      <Footer />
-      <WhatsAppButton />
-    </OrderProvider>
+    <MotionConfig reducedMotion="user">
+      <OrderProvider>
+        <Header />
+        <main>
+          <Hero />
+          <Highlights />
+          <Collection />
+          <StudioTeaser />
+          <HowItWorks />
+          <OrderSection />
+          <Faq />
+        </main>
+        <Footer />
+        <WhatsAppButton />
+      </OrderProvider>
+    </MotionConfig>
   )
 }

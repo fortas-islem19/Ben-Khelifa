@@ -17,8 +17,6 @@ export function validateStep(step, order) {
     if (!order.size) errors.size = 'Choisissez une taille.'
     if (!order.sponge) errors.sponge = 'Choisissez une génoise.'
     if (!order.filling) errors.filling = 'Choisissez une garniture.'
-    if (order.cakeId === 'custom' && !order.designNotes.trim() && !order.referenceImage)
-      errors.designNotes = 'Décrivez votre idée ou ajoutez une photo d’inspiration.'
     if (order.message.length > 60) errors.message = '60 caractères maximum.'
   }
 

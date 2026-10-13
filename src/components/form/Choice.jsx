@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import { formatPrice } from '../../utils/format'
 
 /**
@@ -6,12 +7,17 @@ import { formatPrice } from '../../utils/format'
  */
 export function Choice({ type = 'radio', name, checked, onChange, title, subtitle, price, disabled, variant = 'tile' }) {
   return (
-    <label className={`choice choice--${variant} ${checked ? 'is-checked' : ''} ${disabled ? 'is-disabled' : ''}`}>
+    <motion.label
+      className={`choice choice--${variant} ${checked ? 'is-checked' : ''} ${disabled ? 'is-disabled' : ''}`}
+      whileTap={disabled ? undefined : { scale: 0.96 }}
+      whileHover={disabled ? undefined : { y: -2 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+    >
       <input type={type} name={name} checked={checked} onChange={onChange} disabled={disabled} />
       <span className="choice__title">{title}</span>
       {subtitle && <span className="choice__subtitle">{subtitle}</span>}
       {price > 0 && <span className="choice__price">+ {formatPrice(price)}</span>}
-    </label>
+    </motion.label>
   )
 }
 

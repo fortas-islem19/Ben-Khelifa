@@ -20,7 +20,10 @@ export function estimatePrice(order) {
 
   // The finish is part of the model's design, so it's only a supplement when it changes
   if (order.finish !== cake.defaultFinish) add('Finition', (opt.byId(opt.finishes, order.finish)?.price ?? 0) * extraFactor)
-  add('Forme', opt.byId(opt.shapes, order.shape)?.price ?? 0)
+  if (cake.id === 'custom') {
+    add('Forme', opt.byId(opt.shapes, order.shape)?.price ?? 0)
+    add('Étages', opt.byId(opt.tiers, order.tiers)?.price ?? 0)
+  }
   add('Saveurs', (sum(opt.sponges, [order.sponge]) + sum(opt.fillings, [order.filling])) * extraFactor)
   add('Décorations', sum(opt.decorations, order.decorations))
 

@@ -1,4 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react'
+import { findCake } from '../data/cakes'
 import { useOrder } from './useOrder'
 
 const OrderContext = createContext(null)
@@ -11,7 +12,8 @@ export function OrderProvider({ children }) {
     /** Pre-selects a model from anywhere on the page and brings the form into view. */
     const startOrder = (cakeId) => {
       if (cakeId) orderApi.selectCake(cakeId)
-      setStep(cakeId ? 1 : 0)
+      // Models know their occasion and jump straight to customization
+      setStep(cakeId && findCake(cakeId)?.occasion ? 1 : 0)
       document.getElementById('commander')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
     return { ...orderApi, step, setStep, startOrder }

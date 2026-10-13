@@ -29,6 +29,12 @@ La colonne **Statut** (« Nouvelle ») peut ensuite être modifiée à la main :
 Après toute modification de `Code.gs`, faites **Déployer → Gérer les déploiements → Modifier → Nouvelle version**,
 sinon l’ancienne version reste active. L’URL ne change pas.
 
+## Mise à jour depuis une version précédente
+
+Deux colonnes ont été ajoutées **à la fin** de la feuille : « Étages » et « Aperçu création » (image de la
+création sur mesure, enregistrée dans Drive). Collez le nouveau `Code.gs`, publiez une **nouvelle version** du
+déploiement, puis ajoutez ces deux en-têtes à la main en fin de ligne 1 si l’onglet « Commandes » existe déjà.
+
 ## Notes
 
 - Le site envoie la requête en `no-cors` (Apps Script ne gère pas CORS) : le navigateur ne peut pas lire la réponse,

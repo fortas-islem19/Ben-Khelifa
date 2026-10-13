@@ -39,6 +39,8 @@ var COLUMNS = [
   ['referral', 'Source'],
   ['notes', 'Remarques'],
   ['pageUrl', 'Page'],
+  ['tiers', 'Étages'],
+  ['designPreviewUrl', 'Aperçu création'],
 ];
 
 function doPost(e) {
@@ -50,6 +52,9 @@ function doPost(e) {
 
     if (data.referenceImage && data.referenceImage.data) {
       data.referenceImageUrl = saveImage_(data.referenceImage, data.reference);
+    }
+    if (data.designPreview && data.designPreview.data) {
+      data.designPreviewUrl = saveImage_(data.designPreview, data.reference);
     }
 
     var row = COLUMNS.map(function (col) {
