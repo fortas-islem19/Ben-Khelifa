@@ -25,27 +25,31 @@ export const shapes = [
   { id: 'square', label: 'Carré' },
   { id: 'rectangle', label: 'Rectangulaire' },
   { id: 'heart', label: 'Cœur', price: 800 },
-  { id: 'tiered', label: 'À étages', price: 2000 },
-  { id: 'number', label: 'Chiffre / Lettre', price: 1500 },
+]
+
+export const tiers = [
+  { id: 1, label: '1 étage' },
+  { id: 2, label: '2 étages', price: 2500 },
+  { id: 3, label: '3 étages', price: 5500 },
 ]
 
 export const sponges = [
-  { id: 'vanilla', label: 'Vanille' },
-  { id: 'chocolate', label: 'Chocolat' },
-  { id: 'almond', label: 'Amande' },
-  { id: 'pistachio', label: 'Pistache', price: 800 },
-  { id: 'red-velvet', label: 'Red velvet', price: 500 },
-  { id: 'lemon', label: 'Citron' },
+  { id: 'vanilla', label: 'Vanille', color: '#f1d79b' },
+  { id: 'chocolate', label: 'Chocolat', color: '#6b3e26' },
+  { id: 'almond', label: 'Amande', color: '#e6cc9e' },
+  { id: 'pistachio', label: 'Pistache', price: 800, color: '#b6c784' },
+  { id: 'red-velvet', label: 'Red velvet', price: 500, color: '#a3243a' },
+  { id: 'lemon', label: 'Citron', color: '#f3df72' },
 ]
 
 export const fillings = [
-  { id: 'chantilly-berries', label: 'Chantilly & fruits rouges' },
-  { id: 'chocolate-ganache', label: 'Ganache chocolat' },
-  { id: 'praline', label: 'Praliné noisette', price: 600 },
-  { id: 'pistachio-cream', label: 'Crème pistache', price: 900 },
-  { id: 'salted-caramel', label: 'Caramel beurre salé', price: 500 },
-  { id: 'lotus', label: 'Lotus spéculoos', price: 500 },
-  { id: 'strawberry-mousse', label: 'Mousse fraise' },
+  { id: 'chantilly-berries', label: 'Chantilly & fruits rouges', color: '#f4cbd3' },
+  { id: 'chocolate-ganache', label: 'Ganache chocolat', color: '#43231a' },
+  { id: 'praline', label: 'Praliné noisette', price: 600, color: '#b07a45' },
+  { id: 'pistachio-cream', label: 'Crème pistache', price: 900, color: '#a5bd72' },
+  { id: 'salted-caramel', label: 'Caramel beurre salé', price: 500, color: '#c98a3e' },
+  { id: 'lotus', label: 'Lotus spéculoos', price: 500, color: '#b26f37' },
+  { id: 'strawberry-mousse', label: 'Mousse fraise', color: '#f19aac' },
 ]
 
 export const finishes = [
@@ -72,6 +76,17 @@ export const colors = [
 ]
 export const maxColors = 3
 
+/** Default look of the cake builder (custom cakes). */
+export const builderDefaults = {
+  sponge: 'vanilla',
+  filling: 'chantilly-berries',
+  finish: 'buttercream',
+  baseColor: '#f3ead8',
+  accentColor: '#c9a24b',
+  tiers: 1,
+  shape: 'round',
+}
+
 export const decorations = [
   { id: 'fresh-flowers', label: 'Fleurs (roses, gypsophile)', price: 1500 },
   { id: 'acrylic-topper', label: 'Topper acrylique doré personnalisé', price: 1200 },
@@ -81,6 +96,8 @@ export const decorations = [
   { id: 'sugar-figures', label: 'Figurines en pâte à sucre', price: 2000 },
   { id: 'gold-leaf', label: 'Feuille d’or alimentaire', price: 900 },
   { id: 'candles', label: 'Bougies & chiffres', price: 300 },
+  { id: 'fruits', label: 'Fruits frais (fraises)', price: 900 },
+  { id: 'sprinkles', label: 'Vermicelles & perles', price: 300 },
 ]
 
 export const timeSlots = ['09:00 – 12:00', '12:00 – 15:00', '15:00 – 18:00', '18:00 – 21:00']
@@ -93,3 +110,6 @@ export const fulfillment = [
 export const referralSources = ['Instagram', 'Facebook', 'TikTok', 'Bouche-à-oreille', 'Google', 'Déjà client(e)', 'Autre']
 
 export const byId = (list, id) => list.find((item) => item.id === id)
+
+/** Human name of a builder color (palette name, or the hex code for a custom color). */
+export const colorName = (hex) => (hex ? (colors.find((c) => c.hex === hex)?.label ?? hex) : '')

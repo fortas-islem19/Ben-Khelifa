@@ -2,6 +2,7 @@ import { site } from '../config/site'
 import { findCake } from '../data/cakes'
 import * as opt from '../data/options'
 import { estimatePrice } from '../utils/pricing'
+import { capturePreview } from '../utils/svgToImage'
 import { sendToGoogleSheets } from './googleSheets'
 import { track } from './pixel'
 
@@ -30,11 +31,15 @@ export function buildOrderRecord(order, reference) {
     modelId: order.cakeId,
     occasion: order.occasion,
     size: size ? `${size.label} (${size.servings})` : '',
-    shape: label(opt.shapes, order.shape),
+    shape: order.cakeId === 'custom' ? label(opt.shapes, order.shape) : '',
+    tiers: order.cakeId === 'custom' ? label(opt.tiers, Number(order.tiers)) : '',
     sponge: label(opt.sponges, order.sponge),
     filling: label(opt.fillings, order.filling),
     finish: label(opt.finishes, order.finish),
-    colors: order.colors.map((id) => label(opt.colors, id)).join(', '),
+    colors:
+      order.cakeId === 'custom'
+        ? `Principale : ${opt.colorName(order.baseColor)} · Accent : ${opt.colorName(order.accentColor)}`
+        : order.colors.map((id) => label(opt.colors, id)).join(', '),
     decorations: order.decorations.map((id) => label(opt.decorations, id)).join(', '),
     nameOnCake: order.nameOnCake.trim(),
     age: order.age,
@@ -60,7 +65,8 @@ export function buildOrderRecord(order, reference) {
 export async function submitOrder(order) {
   const reference = createOrderReference()
   const record = buildOrderRecord(order, reference)
-  const payload = { ...record, referenceImage: order.referenceImage ?? null }
+  const designPreview = order.cakeId === 'custom' ? await capturePreview('[data-cake-preview] svg') : null
+  const payload = { ...record, referenceImage: order.referenceImage ?? null, designPreview }
 
   const result = await sendToGoogleSheets(payload)
 

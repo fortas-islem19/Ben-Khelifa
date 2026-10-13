@@ -1,11 +1,15 @@
 import { useCallback, useMemo, useReducer } from 'react'
 import { findCake } from '../data/cakes'
+import { builderDefaults } from '../data/options'
 
 export const initialOrder = {
   cakeId: '',
   occasion: '',
   size: '',
   shape: 'round',
+  tiers: 1,
+  baseColor: '',
+  accentColor: '',
   sponge: '',
   filling: '',
   finish: 'buttercream',
@@ -37,9 +41,25 @@ function reducer(state, action) {
       if (action.max && list.length >= action.max) return state
       return { ...state, [action.field]: [...list, action.value] }
     }
+    case 'merge':
+      return { ...state, ...action.values }
     case 'selectCake': {
       const cake = findCake(action.cakeId)
       if (!cake) return state
+      if (cake.id === 'custom') {
+        // Start the builder from a pretty default, keep whatever was already chosen
+        const d = builderDefaults
+        return {
+          ...state,
+          cakeId: cake.id,
+          size: state.size || cake.defaultSize,
+          sponge: state.sponge || d.sponge,
+          filling: state.filling || d.filling,
+          finish: d.finish,
+          baseColor: state.baseColor || d.baseColor,
+          accentColor: state.accentColor || d.accentColor,
+        }
+      }
       // Apply the model defaults, keep everything the customer already filled in
       return {
         ...state,
@@ -63,10 +83,11 @@ export function useOrder() {
   const setCustomer = useCallback((field, value) => dispatch({ type: 'setCustomer', field, value }), [])
   const toggle = useCallback((field, value, max) => dispatch({ type: 'toggle', field, value, max }), [])
   const selectCake = useCallback((cakeId) => dispatch({ type: 'selectCake', cakeId }), [])
+  const merge = useCallback((values) => dispatch({ type: 'merge', values }), [])
   const reset = useCallback(() => dispatch({ type: 'reset' }), [])
 
   return useMemo(
-    () => ({ order, set, setCustomer, toggle, selectCake, reset }),
-    [order, set, setCustomer, toggle, selectCake, reset],
+    () => ({ order, set, setCustomer, toggle, selectCake, merge, reset }),
+    [order, set, setCustomer, toggle, selectCake, merge, reset],
   )
 }

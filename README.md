@@ -1,8 +1,11 @@
 # Pâtisserie Benkhelifa — Landing page & commandes
 
-Landing page React (Vite) pour présenter la collection de gâteaux et prendre des commandes en ligne :
-modèles de la collection ou création sur mesure, personnalisation complète, estimation de prix en direct,
-envoi vers **Google Sheets** et suivi **Meta Pixel**.
+Landing page React (Vite) animée pour présenter la collection de gâteaux et prendre des commandes en ligne :
+modèles de la collection, ou **création de A à Z dans l’atelier** avec un aperçu animé du gâteau en direct,
+estimation de prix, envoi vers **Google Sheets** et suivi **Meta Pixel**.
+
+Animations : [Motion](https://motion.dev) (`motion/react`). Elles sont automatiquement réduites quand l’appareil
+du visiteur demande moins d’animations (`prefers-reduced-motion`).
 
 ## Démarrage
 
@@ -34,12 +37,22 @@ npm run build          # build de production dans dist/
 ## Parcours de commande
 
 1. **Modèle** — un modèle de la collection ou « Création sur mesure » + occasion
-2. **Personnalisation** — taille, forme, génoise, garniture, finition, couleurs, décorations, prénom/âge/message, description, photo d’inspiration
+2. **Personnalisation**
+   - *Modèle de la collection* : taille, génoise, garniture, finition, couleurs, décorations, prénom/âge/message, modifications, photo d’inspiration
+   - *Création sur mesure → l’atelier* : le client compose son gâteau en 5 onglets (Structure, Saveurs, Habillage,
+     Décor, Inspiration) et voit un dessin animé du gâteau se mettre à jour à chaque choix : 1 à 3 étages, forme
+     (rond, carré, rectangulaire, cœur), vue **en coupe** des saveurs, finition (crème au beurre, chantilly, pâte à sucre,
+     naked, drip), couleur principale + couleur d’accent (palette ou couleur libre), décorations (fleurs, topper doré
+     au prénom, bougies ou chiffre de l’âge, sphères, fruits, feuille d’or…), prénom et message écrits sur le gâteau.
+     Bouton « Surprenez-moi » pour une création aléatoire.
 3. **Date & retrait** — retrait en boutique ou livraison, date (délai minimum configurable), créneau
 4. **Coordonnées** — nom, téléphone, e-mail, source, remarques
 
 Le récapitulatif et l’estimation de prix se mettent à jour en direct. Chaque commande reçoit une référence
 (`BK-AAMMJJ-XXXX`) ; la page de confirmation propose de l’envoyer sur WhatsApp.
+
+Pour une création sur mesure, une **image de l’aperçu** est jointe à la commande et enregistrée dans Google Drive
+(colonne « Aperçu création ») : l’équipe voit exactement ce que le client a composé.
 
 ## Événements Meta Pixel
 
@@ -48,6 +61,7 @@ Le récapitulatif et l’estimation de prix se mettent à jour en direct. Chaque
 | `PageView` | Chargement de la page |
 | `ViewContent` | Clic « Commander » sur un modèle |
 | `InitiateCheckout` | Fin de l’étape 1 du formulaire |
+| `CustomizeProduct` | Ouverture de l’atelier (création sur mesure) |
 | `OrderStepCompleted` (custom) | Chaque étape validée |
 | `Lead` | Commande envoyée (valeur estimée + devise, `eventID` = référence de commande) |
 | `Contact` | Clic WhatsApp |
@@ -67,7 +81,9 @@ src/
   hooks/                  état de la commande (useReducer) + contexte
   utils/                  prix, validation, formatage, compression d’image
   components/             sections de la page
-  components/order/       formulaire multi-étapes
+  components/order/       formulaire multi-étapes + atelier (StepBuilder)
+  components/cake/        dessin SVG animé du gâteau (formes, étages, finitions, décor, vue en coupe)
+  components/motion/      animations réutilisables (apparition au scroll, compteurs, confettis)
 integrations/google-sheets/Code.gs   script à coller dans Google Sheets
 ```
 
