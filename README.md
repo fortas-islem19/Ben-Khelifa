@@ -24,6 +24,10 @@ npm run dev            # http://localhost:5173
 npm run build          # build de production dans dist/
 ```
 
+L’URL Google Sheets et l’ID du Pixel Meta se règlent en haut de `src/config/site.js`
+(`GOOGLE_SHEETS_WEBHOOK_URL`, `META_PIXEL_ID`). Les variables d’environnement ci-dessous, si elles sont définies,
+sont prioritaires :
+
 | Variable | Rôle |
 | --- | --- |
 | `VITE_GOOGLE_SHEETS_WEBHOOK_URL` | URL de l’Apps Script qui écrit les commandes — voir [integrations/google-sheets](integrations/google-sheets/README.md) |
@@ -50,11 +54,19 @@ Chaque commande reçoit une référence (`BK-AAMMJJ-XXXX`) ; la page de confirma
 | Événement | Déclencheur |
 | --- | --- |
 | `PageView` | Chargement de la page |
-| `ViewContent` | Clic sur un thème dans la bande défilante du haut |
-| `InitiateCheckout` | Thème choisi (fin de l’étape 1) |
-| `OrderStepCompleted` (custom) | Chaque étape validée |
-| `Lead` | Commande envoyée (`eventID` = référence de commande) |
-| `Contact` | Clic WhatsApp |
+| `ViewContent` | Le formulaire de commande apparaît à l’écran (1 fois par visite) |
+| `AddToCart` | Thème choisi (1 fois par commande) |
+| `InitiateCheckout` | Arrivée à l’étape 5, nom et téléphone (1 fois par commande) |
+| `Lead` + `Purchase` | Commande envoyée (`eventID` = référence de commande) |
+| `Contact` | Clic sur WhatsApp ou sur le numéro de téléphone |
+| `OrderStepCompleted` (custom) | Chaque étape validée (`step`, `step_number`) |
+
+Chaque événement de commande envoie le thème (`content_name`, `content_ids`), la dimension et le goût
+(`content_category`), et une valeur en DZD. La valeur vient du champ `price` des dimensions dans
+`src/data/options.js` (non affiché sur la page) : renseignez-le pour optimiser vos campagnes sur la valeur.
+
+Conseil : activez **Correspondance avancée automatique** dans le Gestionnaire d’événements (Pixel → Paramètres) :
+le Pixel récupère alors le nom et le téléphone du formulaire (hachés) et améliore l’attribution des commandes.
 
 ## Architecture
 

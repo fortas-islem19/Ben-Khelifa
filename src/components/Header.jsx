@@ -3,6 +3,7 @@ import { useState } from 'react'
 import monogram from '../assets/monogram.png'
 import { site } from '../config/site'
 import { useOrderContext } from '../hooks/OrderContext'
+import { track } from '../services/pixel'
 
 export default function Header() {
   const { startOrder } = useOrderContext()
@@ -25,7 +26,7 @@ export default function Header() {
         </a>
 
         <div className="header__actions">
-          <a className="header__phone" href={site.contact.phoneHref}>
+          <a className="header__phone" href={site.contact.phoneHref} onClick={() => track('Contact', { method: 'phone' })}>
             {site.contact.phoneDisplay}
           </a>
           <motion.button

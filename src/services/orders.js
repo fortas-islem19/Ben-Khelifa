@@ -1,6 +1,6 @@
 import * as opt from '../data/options'
 import { sendToGoogleSheets } from './googleSheets'
-import { track } from './pixel'
+import { orderParams, track } from './pixel'
 
 const label = (list, id) => opt.byId(list, id)?.label ?? ''
 
@@ -38,11 +38,10 @@ export async function submitOrder(order) {
   const record = buildOrderRecord(order, reference)
   const result = await sendToGoogleSheets(record)
 
-  track(
-    'Lead',
-    { content_name: record.theme, content_ids: [order.theme], content_category: record.size },
-    reference,
-  )
+  // The order reference is the event ID, so a future Conversions API can deduplicate.
+  const params = orderParams(order)
+  track('Lead', params, reference)
+  track('Purchase', params, `${reference}-purchase`)
 
   return { reference, record, ...result }
 }
