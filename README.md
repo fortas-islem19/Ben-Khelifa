@@ -1,11 +1,19 @@
 # Pâtisserie Benkhelifa — Landing page & commandes
 
-Landing page React (Vite) animée pour présenter la collection de gâteaux et prendre des commandes en ligne :
-modèles de la collection, ou **création de A à Z dans l’atelier** avec un aperçu animé du gâteau en direct,
-estimation de prix, envoi vers **Google Sheets** et suivi **Meta Pixel**.
+Landing page React (Vite) pour commander un **gâteau à thème** en ligne, avec un formulaire simple en **5 étapes** :
 
-Animations : [Motion](https://motion.dev) (`motion/react`). Elles sont automatiquement réduites quand l’appareil
-du visiteur demande moins d’animations (`prefers-reduced-motion`).
+1. **Thème** — Mouloudia, USMA, CRB, Stitch & Angel, Spider-Man, Batman, Barbie, Baby Boss, Reine des neiges
+2. **Dimension** — 30 × 20 cm ou 30 × 40 cm
+3. **Date & heure** — boutons pour les prochains jours (ou calendrier) + choix de l’heure
+4. **Goût** — Chocolat ou Fruit
+5. **Écriture** — le texte à écrire sur le gâteau (avec aperçu), nom, téléphone, remarque, puis récapitulatif
+
+Un simple toucher sur un thème, une dimension ou un goût passe directement à l’étape suivante.
+Les commandes sont envoyées vers **Google Sheets**, avec suivi **Meta Pixel**.
+
+Design : page blanche avec un fond animé léger (taches pastel qui dérivent, grille de points, vermicelles flottants).
+Animations : [Motion](https://motion.dev) (`motion/react`) et CSS. Elles sont automatiquement coupées quand
+l’appareil du visiteur demande moins d’animations (`prefers-reduced-motion`).
 
 ## Démarrage
 
@@ -26,66 +34,44 @@ npm run build          # build de production dans dist/
 
 | Fichier | Contenu |
 | --- | --- |
-| `src/config/site.js` | Nom, téléphone, adresse, horaires, réseaux, devise, délai minimum de commande |
-| `src/data/cakes.js` | Catalogue : ajouter un modèle = 1 photo dans `public/images/cakes/` + 1 entrée |
-| `src/data/options.js` | Tailles, génoises, garnitures, finitions, couleurs, décorations, créneaux + suppléments |
-| `src/data/content.js` | Points forts, étapes, FAQ |
+| `src/config/site.js` | Nom, téléphone, adresse, horaires, réseaux, délai minimum de commande |
+| `src/data/options.js` | Thèmes, dimensions, heures, goûts, longueur max du texte |
+| `src/data/content.js` | Photos du haut de page, noms des 5 étapes |
 
-> Les prix du catalogue et les suppléments, ainsi que le téléphone et l’adresse, sont des **valeurs d’exemple** :
-> remplacez-les par les vôtres.
+**Ajouter une photo à un thème** : mettez la photo dans `public/images/themes/` puis ajoutez
+`image: '/images/themes/nom.jpg'` au thème dans `src/data/options.js`. La photo remplace alors la carte colorée.
 
-## Parcours de commande
+> Le téléphone et l’adresse dans `src/config/site.js` sont des **valeurs d’exemple** : remplacez-les par les vôtres.
 
-1. **Modèle** — un modèle de la collection ou « Création sur mesure » + occasion
-2. **Personnalisation**
-   - *Modèle de la collection* : taille, génoise, garniture, finition, couleurs, décorations, prénom/âge/message, modifications, photo d’inspiration
-   - *Création sur mesure → l’atelier* : le client compose son gâteau en 5 onglets (Structure, Saveurs, Habillage,
-     Décor, Inspiration) et voit un dessin animé du gâteau se mettre à jour à chaque choix : 1 à 3 étages, forme
-     (rond, carré, rectangulaire, cœur), vue **en coupe** des saveurs, finition (crème au beurre, chantilly, pâte à sucre,
-     naked, drip), couleur principale + couleur d’accent (palette ou couleur libre), décorations (fleurs, topper doré
-     au prénom, bougies ou chiffre de l’âge, sphères, fruits, feuille d’or…), prénom et message écrits sur le gâteau.
-     Bouton « Surprenez-moi » pour une création aléatoire.
-3. **Date & retrait** — retrait en boutique ou livraison, date (délai minimum configurable), créneau
-4. **Coordonnées** — nom, téléphone, e-mail, source, remarques
-
-Le récapitulatif et l’estimation de prix se mettent à jour en direct. Chaque commande reçoit une référence
-(`BK-AAMMJJ-XXXX`) ; la page de confirmation propose de l’envoyer sur WhatsApp.
-
-Pour une création sur mesure, une **image de l’aperçu** est jointe à la commande et enregistrée dans Google Drive
-(colonne « Aperçu création ») : l’équipe voit exactement ce que le client a composé.
+Chaque commande reçoit une référence (`BK-AAMMJJ-XXXX`) ; la page de confirmation propose de l’envoyer sur WhatsApp.
 
 ## Événements Meta Pixel
 
 | Événement | Déclencheur |
 | --- | --- |
 | `PageView` | Chargement de la page |
-| `ViewContent` | Clic « Commander » sur un modèle |
-| `InitiateCheckout` | Fin de l’étape 1 du formulaire |
-| `CustomizeProduct` | Ouverture de l’atelier (création sur mesure) |
+| `ViewContent` | Clic sur un thème dans la bande défilante du haut |
+| `InitiateCheckout` | Thème choisi (fin de l’étape 1) |
 | `OrderStepCompleted` (custom) | Chaque étape validée |
-| `Lead` | Commande envoyée (valeur estimée + devise, `eventID` = référence de commande) |
+| `Lead` | Commande envoyée (`eventID` = référence de commande) |
 | `Contact` | Clic WhatsApp |
-
-L’`eventID` permet d’ajouter plus tard l’API Conversions côté serveur sans doublons.
 
 ## Architecture
 
 ```
 src/
   config/site.js          réglages de la marque + variables d’environnement
-  data/                   catalogue, options, textes (remplaçables par une API/CMS)
+  data/                   thèmes, dimensions, goûts, heures, textes
   services/
     orders.js             point d’entrée unique d’envoi d’une commande
     googleSheets.js       transport vers Apps Script
     pixel.js              wrapper Meta Pixel (no-op si non configuré)
-  hooks/                  état de la commande (useReducer) + contexte
-  utils/                  prix, validation, formatage, compression d’image
-  components/             sections de la page
-  components/order/       formulaire multi-étapes + atelier (StepBuilder)
-  components/cake/        dessin SVG animé du gâteau (formes, étages, finitions, décor, vue en coupe)
-  components/motion/      animations réutilisables (apparition au scroll, compteurs, confettis)
+  hooks/OrderContext.jsx  état de la commande + étape en cours
+  utils/                  validation, formatage des dates
+  components/             fond animé, en-tête, haut de page, pied de page
+  components/order/       formulaire en 5 étapes
+  components/motion/      animations réutilisables (apparition, confettis)
 integrations/google-sheets/Code.gs   script à coller dans Google Sheets
 ```
 
-Pour passer plus tard à un vrai backend (API, Firebase, Supabase…), seul `services/orders.js` est à modifier ;
-pour un catalogue dynamique, remplacez les imports de `src/data/` par un appel API.
+Pour passer plus tard à un vrai backend (API, Firebase, Supabase…), seul `services/orders.js` est à modifier.

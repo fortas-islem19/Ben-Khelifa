@@ -1,8 +1,8 @@
 import { motion } from 'motion/react'
 import { integrations } from '../../config/site'
-import Confetti from '../motion/Confetti'
-import { formatDate } from '../../utils/format'
 import { track } from '../../services/pixel'
+import { formatDate } from '../../utils/format'
+import Confetti from '../motion/Confetti'
 
 export default function OrderSuccess({ result, onNewOrder }) {
   const { reference, record, sent } = result
@@ -10,11 +10,15 @@ export default function OrderSuccess({ result, onNewOrder }) {
   const whatsappText = encodeURIComponent(
     [
       `Bonjour, je viens de passer la commande ${reference}.`,
-      `Modèle : ${record.model}`,
-      `Taille : ${record.size}`,
-      `Date : ${formatDate(record.date)} (${record.timeSlot}) — ${record.fulfillment}`,
+      `Thème : ${record.theme}`,
+      `Dimension : ${record.size}`,
+      `Goût : ${record.flavor}`,
+      `Date : ${formatDate(record.date)} à ${record.time}`,
+      record.cakeText && `Texte : ${record.cakeText}`,
       `Nom : ${record.customerName}`,
-    ].join('\n'),
+    ]
+      .filter(Boolean)
+      .join('\n'),
   )
 
   return (
@@ -49,19 +53,27 @@ export default function OrderSuccess({ result, onNewOrder }) {
       </motion.span>
       <h3>Merci {record.customerName.split(' ')[0]} !</h3>
       <p>
-        Votre demande <strong>{reference}</strong> a bien été reçue. Notre équipe vous appelle très vite au{' '}
-        <strong>{record.phone}</strong> pour confirmer les détails et le prix final.
+        Votre commande <strong>{reference}</strong> a bien été reçue. Nous vous appelons très vite au <strong>{record.phone}</strong> pour
+        la confirmer.
       </p>
+      <ul className="success__recap">
+        <li>{record.theme}</li>
+        <li>{record.size}</li>
+        <li>{record.flavor}</li>
+        <li>
+          {formatDate(record.date)} · {record.time}
+        </li>
+      </ul>
       {!sent && import.meta.env.DEV && (
         <p className="success__dev">
-          Mode développement : <code>VITE_GOOGLE_SHEETS_WEBHOOK_URL</code> n’est pas configurée, la commande a été
-          affichée dans la console.
+          Mode développement : <code>VITE_GOOGLE_SHEETS_WEBHOOK_URL</code> n’est pas configurée, la commande a été affichée dans la
+          console.
         </p>
       )}
       <div className="success__actions">
         {integrations.whatsappNumber && (
           <a
-            className="btn btn--gold"
+            className="btn btn--whatsapp"
             href={`https://wa.me/${integrations.whatsappNumber}?text=${whatsappText}`}
             target="_blank"
             rel="noreferrer"
