@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
-import { seeded } from '../cake/geometry'
+import { seeded } from '../../utils/random'
 
-const COLORS = ['#c9a24b', '#f2c4c9', '#1a1a1a', '#d9bd7e', '#e2367a', '#ffffff']
+const COLORS = ['#ff5c8a', '#ffc94d', '#4cc3ff', '#7ee0a8', '#b18cff', '#141414']
 
 /** One-shot burst of confetti from the centre of its parent. */
 export default function Confetti({ count = 46 }) {

@@ -1,7 +1,7 @@
 # Google Sheets — réception des commandes
 
-Chaque commande envoyée depuis le site ajoute une ligne dans une feuille Google Sheets.
-Les photos d’inspiration sont enregistrées dans un dossier Google Drive et leur lien est ajouté à la ligne.
+Chaque commande envoyée depuis le site ajoute une ligne dans une feuille Google Sheets :
+référence, client, téléphone, thème, dimension, goût, date, heure, texte sur le gâteau, remarque.
 
 ## Mise en place (5 minutes)
 
@@ -12,7 +12,7 @@ Les photos d’inspiration sont enregistrées dans un dossier Google Drive et le
    - Type : **Application Web**
    - Exécuter en tant que : **Moi**
    - Qui a accès : **Tout le monde**
-5. Autorisez l’accès (Sheets + Drive) quand Google le demande.
+5. Autorisez l’accès quand Google le demande.
 6. Copiez l’URL de l’application Web (`https://script.google.com/macros/s/…/exec`) dans le fichier `.env` du projet :
 
    ```
@@ -29,11 +29,11 @@ La colonne **Statut** (« Nouvelle ») peut ensuite être modifiée à la main :
 Après toute modification de `Code.gs`, faites **Déployer → Gérer les déploiements → Modifier → Nouvelle version**,
 sinon l’ancienne version reste active. L’URL ne change pas.
 
-## Mise à jour depuis une version précédente
+## Mise à jour depuis la version précédente (atelier 3D)
 
-Deux colonnes ont été ajoutées **à la fin** de la feuille : « Étages » et « Aperçu création » (image de la
-création sur mesure, enregistrée dans Drive). Collez le nouveau `Code.gs`, publiez une **nouvelle version** du
-déploiement, puis ajoutez ces deux en-têtes à la main en fin de ligne 1 si l’onglet « Commandes » existe déjà.
+Le formulaire a été simplifié et les colonnes ont changé. Collez le nouveau `Code.gs`, publiez une
+**nouvelle version** du déploiement, puis renommez l’ancien onglet « Commandes » (ex. « Commandes 2025 ») :
+un nouvel onglet « Commandes » avec les bons en-têtes sera créé à la prochaine commande.
 
 ## Notes
 

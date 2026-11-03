@@ -5,7 +5,6 @@
  */
 
 var SHEET_NAME = 'Commandes';
-var DRIVE_FOLDER_NAME = 'Benkhelifa — Photos commandes';
 
 /** Column order in the sheet: [payload key, column header]. Add columns at the end. */
 var COLUMNS = [
@@ -14,33 +13,14 @@ var COLUMNS = [
   ['status', 'Statut'],
   ['customerName', 'Client'],
   ['phone', 'Téléphone'],
-  ['email', 'E-mail'],
-  ['model', 'Modèle'],
-  ['occasion', 'Occasion'],
-  ['size', 'Taille'],
-  ['shape', 'Forme'],
-  ['sponge', 'Génoise'],
-  ['filling', 'Garniture'],
-  ['finish', 'Finition'],
-  ['colors', 'Couleurs'],
-  ['decorations', 'Décorations'],
-  ['nameOnCake', 'Prénom sur gâteau'],
-  ['age', 'Âge'],
-  ['message', 'Message'],
-  ['designNotes', 'Description / modifications'],
-  ['referenceImageUrl', 'Photo d’inspiration'],
-  ['date', 'Date souhaitée'],
-  ['timeSlot', 'Créneau'],
-  ['fulfillment', 'Retrait'],
-  ['address', 'Adresse'],
-  ['city', 'Ville'],
-  ['estimatedPrice', 'Prix estimé'],
-  ['currency', 'Devise'],
-  ['referral', 'Source'],
-  ['notes', 'Remarques'],
+  ['theme', 'Thème'],
+  ['size', 'Dimension'],
+  ['flavor', 'Goût'],
+  ['date', 'Date'],
+  ['time', 'Heure'],
+  ['cakeText', 'Texte sur le gâteau'],
+  ['notes', 'Remarque'],
   ['pageUrl', 'Page'],
-  ['tiers', 'Étages'],
-  ['designPreviewUrl', 'Aperçu création'],
 ];
 
 function doPost(e) {
@@ -50,13 +30,6 @@ function doPost(e) {
     var data = JSON.parse(e.postData.contents);
     var sheet = getSheet_();
 
-    if (data.referenceImage && data.referenceImage.data) {
-      data.referenceImageUrl = saveImage_(data.referenceImage, data.reference);
-    }
-    if (data.designPreview && data.designPreview.data) {
-      data.designPreviewUrl = saveImage_(data.designPreview, data.reference);
-    }
-
     var row = COLUMNS.map(function (col) {
       var value = data[col[0]];
       if (col[0] === 'createdAt' && value) return new Date(value);
@@ -65,7 +38,7 @@ function doPost(e) {
     sheet.appendRow(row);
 
     // Optional: email notification for each new order
-    // MailApp.sendEmail('vous@exemple.com', 'Nouvelle commande ' + data.reference, data.customerName + ' — ' + data.model);
+    // MailApp.sendEmail('vous@exemple.com', 'Nouvelle commande ' + data.reference, data.customerName + ' — ' + data.theme);
 
     return json_({ ok: true, reference: data.reference });
   } catch (err) {
@@ -86,17 +59,9 @@ function getSheet_() {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(COLUMNS.map(function (c) { return c[1]; }));
     sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, COLUMNS.length).setFontWeight('bold').setBackground('#1a1a1a').setFontColor('#d9bd7e');
+    sheet.getRange(1, 1, 1, COLUMNS.length).setFontWeight('bold').setBackground('#141414').setFontColor('#ffffff');
   }
   return sheet;
-}
-
-function saveImage_(image, reference) {
-  var folders = DriveApp.getFoldersByName(DRIVE_FOLDER_NAME);
-  var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(DRIVE_FOLDER_NAME);
-  var blob = Utilities.newBlob(Utilities.base64Decode(image.data), image.mimeType || 'image/jpeg', reference + ' - ' + (image.name || 'photo.jpg'));
-  var file = folder.createFile(blob);
-  return file.getUrl();
 }
 
 function json_(obj) {

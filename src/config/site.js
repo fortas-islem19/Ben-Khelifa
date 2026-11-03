@@ -6,7 +6,7 @@ export const site = {
   name: 'Pâtisserie Benkhelifa',
   shortName: 'Benkhelifa',
   since: 2009,
-  tagline: 'L’art du gâteau sur mesure',
+  tagline: 'Gâteaux à thème sur commande',
 
   contact: {
     // TODO: replace with the real shop details
@@ -23,20 +23,13 @@ export const site = {
     facebook: 'https://facebook.com/',
   },
 
-  currency: {
-    code: 'DZD', // ISO code, sent to the pixel
-    symbol: 'DA', // displayed to customers
-    locale: 'fr-DZ',
-  },
-
   ordering: {
     /** Minimum notice before the pickup / delivery date, in days. */
     minLeadDays: 2,
     /** How far in advance an order can be placed, in days. */
     maxLeadDays: 120,
-    /** Size of the reference photo after client-side compression. */
-    maxImageDimension: 1600,
-    maxImageUploadMb: 15,
+    /** Number of quick date buttons shown in step 3 (an “other date” calendar is always available). */
+    quickDays: 8,
   },
 }
 
