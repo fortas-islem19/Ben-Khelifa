@@ -4,7 +4,8 @@
  * then deploy it as a Web App (see README.md in this folder).
  */
 
-var SHEET_NAME = 'Commandes';
+/** Tab created automatically at the first order (it won't touch the other tabs of the spreadsheet). */
+var SHEET_NAME = 'Commandes site web';
 
 /** Column order in the sheet: [payload key, column header]. Add columns at the end. */
 var COLUMNS = [
@@ -33,7 +34,10 @@ function doPost(e) {
     var row = COLUMNS.map(function (col) {
       var value = data[col[0]];
       if (col[0] === 'createdAt' && value) return new Date(value);
-      return value === undefined || value === null ? '' : value;
+      if (value === undefined || value === null) return '';
+      // Keep phone numbers and free text as typed (no "0555…" → 555… conversion)
+      if (col[0] === 'phone' || col[0] === 'cakeText' || col[0] === 'notes') return "'" + value;
+      return value;
     });
     sheet.appendRow(row);
 

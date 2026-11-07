@@ -1,5 +1,6 @@
 import logo from '../assets/logo-full.png'
 import { site } from '../config/site'
+import { track } from '../services/pixel'
 
 export default function Footer() {
   const { contact } = site
@@ -25,7 +26,9 @@ export default function Footer() {
         <div>
           <h4>Contact</h4>
           <p>
-            <a href={contact.phoneHref}>{contact.phoneDisplay}</a>
+            <a href={contact.phoneHref} onClick={() => track('Contact', { method: 'phone' })}>
+              {contact.phoneDisplay}
+            </a>
           </p>
           <p>
             <a href={`mailto:${contact.email}`}>{contact.email}</a>

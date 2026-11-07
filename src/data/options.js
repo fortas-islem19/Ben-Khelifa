@@ -22,10 +22,14 @@ export const themes = [
   { id: 'reine-des-neiges', label: 'Reine des neiges', emoji: '❄️', colors: ['#38bdf8', '#e0f2fe'] },
 ]
 
-/** Cake dimensions (step 2), in centimetres. */
+/**
+ * Cake dimensions (step 2), in centimetres.
+ * `price` (DA) is not shown on the page: it is only sent to the Meta Pixel as the order value,
+ * so that campaigns can optimise on it. Leave it at 0 if unknown.
+ */
 export const sizes = [
-  { id: '30x20', label: '30 × 20 cm', width: 30, height: 20, hint: 'Format classique' },
-  { id: '30x40', label: '30 × 40 cm', width: 30, height: 40, hint: 'Grand format' },
+  { id: '30x20', label: '30 × 20 cm', width: 30, height: 20, hint: 'Format classique', price: 0 },
+  { id: '30x40', label: '30 × 40 cm', width: 30, height: 40, hint: 'Grand format', price: 0 },
 ]
 
 /** Pickup hours offered in step 3. */

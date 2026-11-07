@@ -1,6 +1,6 @@
 import * as opt from '../data/options'
 import { sendToGoogleSheets } from './googleSheets'
-import { track } from './pixel'
+import { orderParams, track } from './pixel'
 
 const label = (list, id) => opt.byId(list, id)?.label ?? ''
 
@@ -38,11 +38,12 @@ export async function submitOrder(order) {
   const record = buildOrderRecord(order, reference)
   const result = await sendToGoogleSheets(record)
 
-  track(
-    'Lead',
-    { content_name: record.theme, content_ids: [order.theme], content_category: record.size },
-    reference,
-  )
+  // The order reference is the event ID shared by the browser and server events.
+  // Name and phone go to our own server only, which hashes them before sending to Meta.
+  const params = orderParams(order)
+  const user = { phone: order.phone, name: order.name }
+  track('Lead', params, reference, user)
+  track('Purchase', params, `${reference}-purchase`, user)
 
   return { reference, record, ...result }
 }

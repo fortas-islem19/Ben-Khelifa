@@ -1,11 +1,10 @@
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, useInView } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { site } from '../../config/site'
 import { steps } from '../../data/content'
-import { byId, themes } from '../../data/options'
 import { useOrderContext } from '../../hooks/OrderContext'
 import { submitOrder } from '../../services/orders'
-import { track, trackCustom } from '../../services/pixel'
+import { orderParams, track, trackCustom } from '../../services/pixel'
 import { validateStep } from '../../utils/validation'
 import { Reveal } from '../motion/Reveal'
 import OrderSuccess from './OrderSuccess'
@@ -33,7 +32,7 @@ export default function OrderSection() {
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
   const [result, setResult] = useState(null)
   const [direction, setDirection] = useState(1)
-  const checkoutTracked = useRef(false)
+  const tracked = useRef({}) // events sent once per order: AddToCart, InitiateCheckout
   const autoTimer = useRef(null)
   const topRef = useRef(null)
   // Latest order, for the auto-advance timer (its closure was created before the last choice)
@@ -43,6 +42,24 @@ export default function OrderSection() {
     orderRef.current = order
   }, [order])
   useEffect(() => () => clearTimeout(autoTimer.current), [])
+
+  // ViewContent: the visitor sees the order form (once per visit)
+  const inView = useInView(topRef, { once: true, amount: 0.25 })
+  useEffect(() => {
+    if (inView) track('ViewContent', { content_name: 'Formulaire de commande', content_type: 'product' })
+  }, [inView])
+
+  // AddToCart once a theme is chosen, InitiateCheckout on reaching the contact details.
+  // Watching the step also covers orders started from the theme strip (which open step 2).
+  useEffect(() => {
+    const once = (event) => {
+      if (tracked.current[event]) return
+      tracked.current[event] = true
+      track(event, orderParams(orderRef.current))
+    }
+    if (step >= 1) once('AddToCart')
+    if (step === LAST) once('InitiateCheckout')
+  }, [step])
 
   const scrollTop = () => {
     const top = topRef.current?.getBoundingClientRect().top ?? 0
@@ -60,13 +77,9 @@ export default function OrderSection() {
 
   /** Step `from` is valid: track it and move on. */
   const complete = (from) => {
-    if (from === 0 && !checkoutTracked.current) {
-      checkoutTracked.current = true
-      const themeId = orderRef.current.theme
-      track('InitiateCheckout', { content_name: byId(themes, themeId)?.label, content_ids: [themeId] })
-    }
-    trackCustom('OrderStepCompleted', { step: steps[from] })
-    goTo(from + 1, from)
+    const next = from + 1
+    trackCustom('OrderStepCompleted', { step: steps[from], step_number: next, ...orderParams(orderRef.current) })
+    goTo(next, from)
   }
 
   /** Called by the cards: a choice was just made, so the step is valid. */
@@ -110,7 +123,7 @@ export default function OrderSection() {
     reset()
     setResult(null)
     setStatus('idle')
-    checkoutTracked.current = false
+    tracked.current = {}
     goTo(0)
   }
 

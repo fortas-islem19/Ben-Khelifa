@@ -55,7 +55,13 @@ export default function Hero() {
             >
               Commander mon gâteau
             </motion.button>
-            <motion.a className="btn btn--ghost" href={site.contact.phoneHref} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+            <motion.a
+              className="btn btn--ghost"
+              href={site.contact.phoneHref}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => track('Contact', { method: 'phone' })}
+            >
               Appeler
             </motion.a>
           </motion.div>
@@ -93,12 +99,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <ThemeMarquee
-        onPick={(theme) => {
-          track('ViewContent', { content_name: theme.label, content_ids: [theme.id] })
-          startOrder(theme.id)
-        }}
-      />
+      <ThemeMarquee onPick={(theme) => startOrder(theme.id)} />
     </section>
   )
 }
