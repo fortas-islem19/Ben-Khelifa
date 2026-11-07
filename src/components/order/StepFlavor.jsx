@@ -17,9 +17,15 @@ export default function StepFlavor({ order, set, advance, errors }) {
               advance()
             }}
             art={
-              <span className="theme-art" style={{ background: `radial-gradient(circle at 28% 22%, ${flavor.colors[1]}, ${flavor.colors[0]} 75%)` }}>
-                <span className="theme-art__emoji">{flavor.emoji}</span>
-              </span>
+              flavor.image ? (
+                <span className="theme-art theme-art--photo">
+                  <img src={flavor.image} alt="" loading="lazy" />
+                </span>
+              ) : (
+                <span className="theme-art" style={{ background: `radial-gradient(circle at 28% 22%, ${flavor.colors[1]}, ${flavor.colors[0]} 75%)` }}>
+                  <span className="theme-art__emoji">{flavor.emoji}</span>
+                </span>
+              )
             }
             title={flavor.label}
           />

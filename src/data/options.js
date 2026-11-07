@@ -7,19 +7,20 @@
  * Cake themes (step 1).
  * - `colors`: the two colours of the card (gradient, or stripes for the football clubs)
  * - `badge`: short text shown on the card (clubs) — otherwise `emoji` is shown
- * - `image`: optional photo of a real cake for this theme, e.g. '/images/themes/barbie.jpg'
- *   (put the file in `public/images/themes/`). When set, the photo replaces the coloured card.
+ * - `image`: photo of a cake in this theme (`public/images/themes/`). When set, the photo replaces the
+ *   coloured card. The current photos are AI-generated illustrations: replace them with photos of your
+ *   own cakes by keeping the same file names.
  */
 export const themes = [
-  { id: 'mouloudia', label: 'Mouloudia', badge: 'MCA', colors: ['#0a8f43', '#d7182a'], club: true },
-  { id: 'usma', label: 'USMA', badge: 'USMA', colors: ['#d7182a', '#141414'], club: true },
-  { id: 'crb', label: 'CRB', badge: 'CRB', colors: ['#d7182a', '#ffffff'], club: true },
-  { id: 'stitch-angel', label: 'Stitch & Angel', emoji: '💙', colors: ['#2f7bf5', '#f472b6'] },
-  { id: 'spider-man', label: 'Spider-Man', emoji: '🕷️', colors: ['#e11d2e', '#1d4ed8'] },
-  { id: 'batman', label: 'Batman', emoji: '🦇', colors: ['#141414', '#f5c518'] },
-  { id: 'barbie', label: 'Barbie', emoji: '💖', colors: ['#ec4899', '#fbcfe8'] },
-  { id: 'baby-boss', label: 'Baby Boss', emoji: '👶', colors: ['#1e3a8a', '#93c5fd'] },
-  { id: 'reine-des-neiges', label: 'Reine des neiges', emoji: '❄️', colors: ['#38bdf8', '#e0f2fe'] },
+  { id: 'mouloudia', label: 'Mouloudia', badge: 'MCA', colors: ['#0a8f43', '#d7182a'], club: true, image: '/images/themes/mouloudia.jpg' },
+  { id: 'usma', label: 'USMA', badge: 'USMA', colors: ['#d7182a', '#141414'], club: true, image: '/images/themes/usma.jpg' },
+  { id: 'crb', label: 'CRB', badge: 'CRB', colors: ['#d7182a', '#ffffff'], club: true, image: '/images/themes/crb.jpg' },
+  { id: 'stitch-angel', label: 'Stitch & Angel', emoji: '💙', colors: ['#2f7bf5', '#f472b6'], image: '/images/themes/stitch-angel.jpg' },
+  { id: 'spider-man', label: 'Spider-Man', emoji: '🕷️', colors: ['#e11d2e', '#1d4ed8'], image: '/images/themes/spider-man.jpg' },
+  { id: 'batman', label: 'Batman', emoji: '🦇', colors: ['#141414', '#f5c518'], image: '/images/themes/batman.jpg' },
+  { id: 'barbie', label: 'Barbie', emoji: '💖', colors: ['#ec4899', '#fbcfe8'], image: '/images/themes/barbie.jpg' },
+  { id: 'baby-boss', label: 'Baby Boss', emoji: '👶', colors: ['#1e3a8a', '#93c5fd'], image: '/images/themes/baby-boss.jpg' },
+  { id: 'reine-des-neiges', label: 'Reine des neiges', emoji: '❄️', colors: ['#38bdf8', '#e0f2fe'], image: '/images/themes/reine-des-neiges.jpg' },
 ]
 
 /**
@@ -37,8 +38,8 @@ export const hours = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:
 
 /** Flavours (step 4). */
 export const flavors = [
-  { id: 'chocolat', label: 'Chocolat', emoji: '🍫', colors: ['#5a321d', '#a8693f'] },
-  { id: 'fruit', label: 'Fruit', emoji: '🍓', colors: ['#f43f5e', '#fecdd3'] },
+  { id: 'chocolat', label: 'Chocolat', emoji: '🍫', colors: ['#5a321d', '#a8693f'], image: '/images/flavors/chocolat.jpg' },
+  { id: 'fruit', label: 'Fruit', emoji: '🍓', colors: ['#f43f5e', '#fecdd3'], image: '/images/flavors/fruit.jpg' },
 ]
 
 /** Maximum length of the text written on the cake (step 5). */
