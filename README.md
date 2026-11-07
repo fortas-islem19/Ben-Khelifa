@@ -9,7 +9,9 @@ Landing page React (Vite) pour commander un **gâteau à thème** en ligne, avec
 5. **Écriture** — le texte à écrire sur le gâteau (avec aperçu), nom, téléphone, remarque, puis récapitulatif
 
 Un simple toucher sur un thème, une dimension ou un goût passe directement à l’étape suivante.
-Les commandes sont envoyées vers **Google Sheets**, avec suivi **Meta Pixel**.
+Les commandes arrivent dans la feuille Google Sheets
+[« Ben Khelifa — Commandes site web »](https://docs.google.com/spreadsheets/d/1MhrhuhroEcKj1ATnHH_HNRstzRxh4PKKoHLax3yomYU/edit),
+avec suivi **Meta Pixel** et API Conversions.
 
 Design : page blanche avec un fond animé léger (taches pastel qui dérivent, grille de points, vermicelles flottants).
 Animations : [Motion](https://motion.dev) (`motion/react`) et CSS. Elles sont automatiquement coupées quand

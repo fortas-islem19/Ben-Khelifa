@@ -7,7 +7,8 @@
  * Google Apps Script Web App URL that writes each order in Google Sheets
  * (https://script.google.com/macros/s/…/exec — see integrations/google-sheets/README.md).
  */
-const GOOGLE_SHEETS_WEBHOOK_URL = ''
+const GOOGLE_SHEETS_WEBHOOK_URL =
+  'https://script.google.com/macros/s/AKfycbwqhwMLleihTWM94HxuZ1fYcpRdu4-ca_JBweH-BgiXTB68nzsVPx7y3ObLZ_IjrP1gEA/exec'
 
 /** Meta (Facebook) Pixel ID, from Events Manager → Data sources. */
 const META_PIXEL_ID = '1865859407934132'
