@@ -38,10 +38,12 @@ export async function submitOrder(order) {
   const record = buildOrderRecord(order, reference)
   const result = await sendToGoogleSheets(record)
 
-  // The order reference is the event ID, so a future Conversions API can deduplicate.
+  // The order reference is the event ID shared by the browser and server events.
+  // Name and phone go to our own server only, which hashes them before sending to Meta.
   const params = orderParams(order)
-  track('Lead', params, reference)
-  track('Purchase', params, `${reference}-purchase`)
+  const user = { phone: order.phone, name: order.name }
+  track('Lead', params, reference, user)
+  track('Purchase', params, `${reference}-purchase`, user)
 
   return { reference, record, ...result }
 }

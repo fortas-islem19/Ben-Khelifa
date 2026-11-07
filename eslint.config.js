@@ -20,4 +20,9 @@ export default [
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
+  {
+    // Vercel serverless functions run on Node
+    files: ['api/**/*.js'],
+    languageOptions: { globals: globals.node },
+  },
 ]
