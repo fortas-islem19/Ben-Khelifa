@@ -10,6 +10,9 @@
 const GOOGLE_SHEETS_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbwqhwMLleihTWM94HxuZ1fYcpRdu4-ca_JBweH-BgiXTB68nzsVPx7y3ObLZ_IjrP1gEA/exec'
 
+/** WhatsApp number, international format without “+” (0560 42 23 02). Empty = no WhatsApp buttons. */
+const WHATSAPP_NUMBER = '213560422302'
+
 /** Meta (Facebook) Pixel ID, from Events Manager → Data sources. */
 const META_PIXEL_ID = '1865859407934132'
 
@@ -58,5 +61,5 @@ export const integrations = {
   googleSheetsWebhookUrl: import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL || GOOGLE_SHEETS_WEBHOOK_URL,
   metaPixelId: import.meta.env.VITE_META_PIXEL_ID || META_PIXEL_ID,
   conversionsApiUrl: CONVERSIONS_API && import.meta.env.PROD ? '/api/meta-capi' : '',
-  whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || '',
+  whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || WHATSAPP_NUMBER,
 }
