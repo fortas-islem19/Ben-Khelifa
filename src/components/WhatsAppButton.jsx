@@ -1,17 +1,51 @@
 import { motion } from 'motion/react'
+import { useEffect, useState } from 'react'
 import { integrations } from '../config/site'
 import { track } from '../services/pixel'
 
+/** On phones and tablets, the button would cover the form's “Continuer” button. */
+const SMALL_SCREEN = '(max-width: 900px)'
+
+/** True while the order form fills the screen of a small device. */
+function useTuckedOverForm() {
+  const [tucked, setTucked] = useState(false)
+  useEffect(() => {
+    const section = document.getElementById('commander')
+    if (!section || !('IntersectionObserver' in window)) return
+    const small = window.matchMedia(SMALL_SCREEN)
+    let formVisible = false
+    const update = () => setTucked(formVisible && small.matches)
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        formVisible = entry.isIntersecting
+        update()
+      },
+      { rootMargin: '-35% 0px -35% 0px' }, // the form crosses the middle of the screen
+    )
+    observer.observe(section)
+    small.addEventListener('change', update)
+    return () => {
+      observer.disconnect()
+      small.removeEventListener('change', update)
+    }
+  }, [])
+  return tucked
+}
+
 export default function WhatsAppButton() {
+  const tucked = useTuckedOverForm()
   if (!integrations.whatsappNumber) return null
   const text = encodeURIComponent('Bonjour, je souhaite des informations pour une commande de gâteau.')
   return (
     <motion.a
       initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 2 }}
+      animate={{ scale: tucked ? 0 : 1 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 16, delay: tucked ? 0 : 0.3 }}
       whileHover={{ scale: 1.1 }}
       className="whatsapp-fab"
+      style={{ pointerEvents: tucked ? 'none' : undefined }}
+      tabIndex={tucked ? -1 : undefined}
+      aria-hidden={tucked || undefined}
       href={`https://wa.me/${integrations.whatsappNumber}?text=${text}`}
       target="_blank"
       rel="noreferrer"
