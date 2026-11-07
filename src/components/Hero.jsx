@@ -6,6 +6,7 @@ import { useOrderContext } from '../hooks/OrderContext'
 import { track } from '../services/pixel'
 import { WordsReveal } from './motion/Reveal'
 import { ease } from './motion/variants'
+import PhoneIcon from './PhoneIcon'
 import ThemeArt from './ThemeArt'
 
 const photoLayout = [
@@ -62,7 +63,8 @@ export default function Hero() {
               whileTap={{ scale: 0.96 }}
               onClick={() => track('Contact', { method: 'phone' })}
             >
-              Appeler
+              <PhoneIcon />
+              {site.contact.phoneDisplay}
             </motion.a>
           </motion.div>
         </div>

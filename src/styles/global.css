@@ -365,9 +365,13 @@ textarea {
   gap: 1rem;
 }
 .header__phone {
-  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   text-decoration: none;
-  color: var(--ink-soft);
+  color: var(--ink);
 }
 .header__phone:hover {
   color: var(--accent);
@@ -382,7 +386,15 @@ textarea {
   transform-origin: 0 50%;
 }
 @media (max-width: 640px) {
+  /* phone: round icon button next to “Commander” */
   .header__phone {
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+  }
+  .header__phone span {
     display: none;
   }
 }

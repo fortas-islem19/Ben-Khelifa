@@ -26,9 +26,9 @@ export const site = {
   tagline: 'Gâteaux à thème sur commande',
 
   contact: {
+    phoneDisplay: '0560 42 23 02',
+    phoneHref: 'tel:+213560422302',
     // TODO: replace with the real shop details
-    phoneDisplay: '+213 555 00 00 00',
-    phoneHref: 'tel:+213555000000',
     email: 'contact@benkhelifa.com',
     address: 'Adresse de la boutique, Ville',
     mapsUrl: 'https://maps.google.com',

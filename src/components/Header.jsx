@@ -4,6 +4,7 @@ import monogram from '../assets/monogram.png'
 import { site } from '../config/site'
 import { useOrderContext } from '../hooks/OrderContext'
 import { track } from '../services/pixel'
+import PhoneIcon from './PhoneIcon'
 
 export default function Header() {
   const { startOrder } = useOrderContext()
@@ -26,8 +27,14 @@ export default function Header() {
         </a>
 
         <div className="header__actions">
-          <a className="header__phone" href={site.contact.phoneHref} onClick={() => track('Contact', { method: 'phone' })}>
-            {site.contact.phoneDisplay}
+          <a
+            className="header__phone"
+            href={site.contact.phoneHref}
+            aria-label={`Appeler le ${site.contact.phoneDisplay}`}
+            onClick={() => track('Contact', { method: 'phone' })}
+          >
+            <PhoneIcon />
+            <span>{site.contact.phoneDisplay}</span>
           </a>
           <motion.button
             type="button"
