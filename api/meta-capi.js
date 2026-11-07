@@ -10,6 +10,9 @@
  *                           Never put it in the code: the repository is public.
  *   META_PIXEL_ID           optional — defaults to the site's Pixel.
  *   META_TEST_EVENT_CODE    optional — e.g. TEST12345, to see events in Events Manager → Test events.
+ *
+ * Opening /api/meta-capi in a browser (GET) checks the setup: it sends one test-only PageView
+ * (marked with a test code, so it is not counted in campaign results) and shows Meta's answer.
  */
 import { createHash } from 'node:crypto'
 
@@ -57,9 +60,38 @@ function userData(req, user = {}) {
   return clean(data)
 }
 
+async function sendToMeta(payload) {
+  const response = await fetch(
+    `https://graph.facebook.com/${API_VERSION}/${PIXEL_ID}/events?access_token=${encodeURIComponent(ACCESS_TOKEN)}`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) },
+  )
+  const result = await response.json().catch(() => ({}))
+  return { ok: response.ok, events_received: result.events_received, error: result.error?.message }
+}
+
+/** GET: setup check with a single test-only event. */
+async function healthCheck(req, res) {
+  const event = {
+    event_name: 'PageView',
+    event_time: Math.floor(Date.now() / 1000),
+    event_id: `healthcheck-${Date.now()}`,
+    action_source: 'website',
+    user_data: userData(req),
+  }
+  const result = await sendToMeta({ data: [event], test_event_code: process.env.META_TEST_EVENT_CODE || 'TEST_SETUP_CHECK' })
+  return res.status(result.ok ? 200 : 502).json({ pixel: PIXEL_ID, api_version: API_VERSION, ...result })
+}
+
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'POST only' })
-  if (!ACCESS_TOKEN) return res.status(200).json({ ok: false, error: 'META_CAPI_ACCESS_TOKEN is not set' })
+  if (!ACCESS_TOKEN) return res.status(500).json({ ok: false, error: 'META_CAPI_ACCESS_TOKEN is not set' })
+  if (req.method === 'GET') {
+    try {
+      return await healthCheck(req, res)
+    } catch {
+      return res.status(502).json({ ok: false, error: 'Meta unreachable' })
+    }
+  }
+  if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'GET or POST only' })
 
   let body = req.body
   if (typeof body === 'string') {
@@ -90,13 +122,9 @@ export default async function handler(req, res) {
   if (process.env.META_TEST_EVENT_CODE) payload.test_event_code = process.env.META_TEST_EVENT_CODE
 
   try {
-    const response = await fetch(
-      `https://graph.facebook.com/${API_VERSION}/${PIXEL_ID}/events?access_token=${encodeURIComponent(ACCESS_TOKEN)}`,
-      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) },
-    )
-    const result = await response.json().catch(() => ({}))
-    if (!response.ok) console.error('[meta-capi]', event_name, result.error?.message)
-    return res.status(response.ok ? 200 : 502).json({ ok: response.ok, events_received: result.events_received, error: result.error?.message })
+    const result = await sendToMeta(payload)
+    if (!result.ok) console.error('[meta-capi]', event_name, result.error)
+    return res.status(result.ok ? 200 : 502).json(result)
   } catch (err) {
     console.error('[meta-capi]', err)
     return res.status(502).json({ ok: false, error: 'Meta unreachable' })
