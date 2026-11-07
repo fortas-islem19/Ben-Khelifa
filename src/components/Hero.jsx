@@ -1,7 +1,8 @@
-import { motion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useEffect, useMemo, useState } from 'react'
 import { site } from '../config/site'
-import { heroPhotos } from '../data/content'
-import { themes } from '../data/options'
+import { hero } from '../data/content'
+import { byId, themes } from '../data/options'
 import { useOrderContext } from '../hooks/OrderContext'
 import { track } from '../services/pixel'
 import { WordsReveal } from './motion/Reveal'
@@ -70,25 +71,14 @@ export default function Hero() {
         </div>
 
         <div className="hero__gallery" aria-hidden="true">
-          {heroPhotos.map((photo, i) => {
-            const p = photoLayout[i]
-            return (
-              <motion.figure
-                key={photo.src}
-                className={`hero__photo hero__photo--${i + 1}`}
-                initial={{ opacity: 0, scale: 0.85, rotate: p.rotate * 3, ...p.from }}
-                animate={{ opacity: 1, scale: 1, rotate: p.rotate, x: 0, y: 0 }}
-                transition={{ duration: 1.1, ease, delay: 0.3 + i * 0.15 }}
-              >
-                <div
-                  className="hero__photo-inner"
-                  style={{ '--float': `${-p.float}px`, animationDuration: `${p.duration}s`, animationDelay: `${1.4 + i * 0.4}s` }}
-                >
-                  <img src={photo.src} alt={photo.alt} loading={i === 0 ? 'eager' : 'lazy'} />
-                </div>
-              </motion.figure>
-            )
-          })}
+          <HeroFrame index={0}>
+            <img src={hero.main.src} alt={hero.main.alt} fetchPriority="high" />
+          </HeroFrame>
+          {hero.rotations.map((ids, i) => (
+            <HeroFrame key={i} index={i + 1}>
+              <RotatingTheme ids={ids} offset={i} />
+            </HeroFrame>
+          ))}
           <motion.span
             className="hero__badge"
             initial={{ scale: 0, rotate: -90 }}
@@ -103,6 +93,84 @@ export default function Hero() {
 
       <ThemeMarquee onPick={(theme) => startOrder(theme.id)} />
     </section>
+  )
+}
+
+/** A tilted, floating photo frame of the hero gallery. */
+function HeroFrame({ index, children }) {
+  const p = photoLayout[index]
+  return (
+    <motion.figure
+      className={`hero__photo hero__photo--${index + 1}`}
+      initial={{ opacity: 0, scale: 0.85, rotate: p.rotate * 3, ...p.from }}
+      animate={{ opacity: 1, scale: 1, rotate: p.rotate, x: 0, y: 0 }}
+      transition={{ duration: 1.1, ease, delay: 0.3 + index * 0.15 }}
+    >
+      <div
+        className="hero__photo-inner"
+        style={{ '--float': `${-p.float}px`, animationDuration: `${p.duration}s`, animationDelay: `${1.4 + index * 0.4}s` }}
+      >
+        {children}
+      </div>
+    </motion.figure>
+  )
+}
+
+/** Cross-fades through the photos of several themes, with the theme name. */
+function RotatingTheme({ ids, offset }) {
+  const list = useMemo(() => ids.map((id) => byId(themes, id)).filter((t) => t?.image), [ids])
+  const [index, setIndex] = useState(0)
+  const reduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    // Preload the next photos so each fade is instant
+    list.forEach((t) => {
+      new Image().src = t.image
+    })
+  }, [list])
+
+  useEffect(() => {
+    if (reduceMotion || list.length < 2) return
+    let timer
+    // The two frames change one after the other, not at the same time
+    const start = setTimeout(() => {
+      setIndex((i) => (i + 1) % list.length)
+      timer = setInterval(() => setIndex((i) => (i + 1) % list.length), hero.interval * 1000)
+    }, (hero.interval + offset * (hero.interval / 2)) * 1000)
+    return () => {
+      clearTimeout(start)
+      clearInterval(timer)
+    }
+  }, [reduceMotion, list.length, offset])
+
+  const theme = list[index]
+  if (!theme) return null
+  return (
+    <>
+      <AnimatePresence initial={false}>
+        <motion.img
+          key={theme.id}
+          src={theme.image}
+          alt=""
+          initial={{ opacity: 0, scale: 1.08 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.9, ease }}
+        />
+      </AnimatePresence>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={theme.id}
+          className="hero__tag"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.35 }}
+        >
+          {theme.label}
+        </motion.span>
+      </AnimatePresence>
+    </>
   )
 }
 

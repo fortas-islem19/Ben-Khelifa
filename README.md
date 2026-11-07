@@ -44,8 +44,11 @@ sont prioritaires :
 | `src/data/options.js` | Thèmes, dimensions, heures, goûts, longueur max du texte |
 | `src/data/content.js` | Photos du haut de page, noms des 5 étapes |
 
-**Ajouter une photo à un thème** : mettez la photo dans `public/images/themes/` puis ajoutez
-`image: '/images/themes/nom.jpg'` au thème dans `src/data/options.js`. La photo remplace alors la carte colorée.
+**Photos** : chaque thème et chaque goût a sa photo (`public/images/themes/`, `public/images/flavors/`), et le haut
+de page montre `public/images/hero/birthday-cake.jpg` avec deux cadres qui font défiler les photos des thèmes
+(liste dans `src/data/content.js`). Ces photos sont des **illustrations générées par IA** (Figma), sans personnages
+ni logos officiels. Pour mettre vos vraies photos de gâteaux, remplacez les fichiers en gardant les mêmes noms
+(format carré, 600 × 600 px conseillé).
 
 > Le téléphone et l’adresse dans `src/config/site.js` sont des **valeurs d’exemple** : remplacez-les par les vôtres.
 
